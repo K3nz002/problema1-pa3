@@ -21,6 +21,13 @@ def chamar_proximo( ):
     
     if in fila_espera
 
+def desistir(cpf):
+    for i in range(len(fila_espera)):
+        if fila_espera[i]["cpf"] == cpf:
+            fila_espera.pop(i)
+            return True
+    return false
+
 def tamanho_final():
     pass
 
