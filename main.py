@@ -59,8 +59,8 @@ def desistir(cpf):
             return True
     return False
 
-def tamanho_final():
-    pass
+def tamanho_fila():
+    return len(estado.fila_espera)
 
 def relatorio_do_dia():
     pass
