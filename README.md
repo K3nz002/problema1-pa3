@@ -16,7 +16,7 @@ A **Fase 1** foca em fornecer um sistema correto e funcional utilizando exclusiv
 
 ##  Integrantes do Grupo
 
-* **Arthur Ornelas** - *R1 e R2*
+* **Arthur Ornellas** - *R1 e R2*
 * **Guilherme Kenzo** - *R3 e R4*
 * **Pedro Fonseca** - *R5 e R6*
 * **Guilherme de Castro** - *R7*

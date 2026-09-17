@@ -3,9 +3,6 @@
 fila_espera = []
 cadastros = []
 
-cadastros = []
-
-
 def buscar_cadastro(cpf):           # R2: basicamente varre a lista de cadastros, se encontrar uma  
     for paciente in cadastros:      # correspondência, ele retorna o nome do paciente
         if paciente[0] == cpf:
@@ -25,7 +22,9 @@ def cadastrar(cpf, nome, nascimento):
 def dar_entrada(cpf, risco):
     if not buscar_cadastro(cpf):
         print("Paciente não cadastrado.")
-        cadastrar(cpf, nome, nascimento)
+        return cadastrar(cpf, nome, nascimento)
+
+    # Não sabemos se a entrada é em string ou numero
     else:
         if risco.lower() == "emergencia":
             risco = 1
@@ -43,28 +42,30 @@ def chamar_proximo( ):
     if not fila_espera:
         return "Fila vazia."
     
+    # Lógica de Triagem
     for i in range(len(fila_espera)):
         if fila_espera[i][1] == 1:
             return "Chamado: " + fila_espera[i][0] + "Risco: Emergência"
             fila_espera.pop(i)
-            return True
+            break
         elif fila_espera[i][1] == 2:
             return "Chamado: " + fila_espera[i][0] + "Risco: Muito urgente"
             fila_espera.pop(i)
-            return True
+            break
         elif fila_espera[i][1] == 3:
             return "Chamado: " + fila_espera[i][0] + "Risco: Urgente"
             fila_espera.pop(i)
-            return True
+            break
         elif fila_espera[i][1] == 4:
             return "Chamado: " + fila_espera[i][0] + "Risco: Pouco urgente"
             fila_espera.pop(i)
-            return True
+            break
         elif fila_espera[i][1] == 5:
             return "Chamado: " + fila_espera[i][0] + "Risco: Não urgente"
             fila_espera.pop(i)
-            return True
-        
+            break
+        else:
+            return "Nenhum paciente na fila."
 
 def desistir(cpf):
     for i in range(len(fila_espera)):
