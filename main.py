@@ -1,12 +1,30 @@
 # Bibliotecas
 
 fila_espera = []
+cadastros = []
 
+def buscar_cadastro(cpf):           # R2: basicamente varre a lista de cadastros, se encontrar uma  
+    for paciente in cadastros:      # correspondência, ele retorna o nome do paciente
+        if paciente["cpf"] == cpf:
+            return paciente
+    return None
+    
 def cadastrar(cpf, nome, nascimento):
-    pass
+    if buscar_cadastro(cpf) is not None:               #Verificando se o CPF já foi cadastrado
+        print(f"O CPF digitado já possui cadastro.")
+        return False
+        
+    novo_paciente = {        #Cadastra o novo paicente
+        "cpf": cpf,
+        "nome": nome,
+        "nascimento": nascimento
+    }
 
-def buscar_cadastro(cpf):
-    pass
+    cadastros.append(novo_paciente)
+    print(f"Cadastro efetuado!")
+    return True
+
+
 
 def dar_entrada(cpf, risco):
     if not buscar_cadastro(cpf):
