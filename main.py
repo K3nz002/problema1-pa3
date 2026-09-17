@@ -54,13 +54,13 @@ def chamar_proximo( ):
 
 def desistir(cpf):
     for i in range(len(fila_espera)):
-        if fila_espera[i]["cpf"] == cpf:
+        if fila_espera[i][0] == cpf:
             fila_espera.pop(i)
             return True
     return False
 
 def tamanho_fila():
-    return len(estado.fila_espera)
+    return len(fila_espera)
 
 def relatorio_do_dia():
     pass
