@@ -1,6 +1,7 @@
 # Bibliotecas
 
 fila_espera = []
+atendidos = []
 cadastros = []
 
 def buscar_cadastro(cpf):           # R2: basicamente varre a lista de cadastros, se encontrar uma  
@@ -22,57 +23,42 @@ def cadastrar(cpf, nome, nascimento):
 def dar_entrada(cpf, risco):
     if not buscar_cadastro(cpf):
         print("Paciente não cadastrado.")
-        return cadastrar(cpf, nome, nascimento)
+        return False
+    
+    for i in range(len(fila_espera)):
+        if cpf in fila_espera[i][0]:
+            print("Paciente já está na fila.")
+            return False
 
-    # Não sabemos se a entrada é em string ou numero
-    else:
-        if risco.lower() == "emergencia":
-            risco = 1
-        elif risco.lower() == "muito urgente":
-            risco = 2
-        elif risco.lower() == "urgente":
-            risco = 3
-        elif risco.lower() == "pouco urgente":
-            risco = 4
-        elif risco.lower() == "nao urgente":
-            risco = 5
+    # A entrada de risco tem que ser em inteiro se não teria muitas variáveis como acentuação e número de espaços
+    if risco > 1 and risco < 5:
         fila_espera.append([cpf, risco])
+    else:
+        print("Risco inválido.")
+        return False
 
 def chamar_proximo( ):
     if not fila_espera:
-        return "Fila vazia."
+        print("Fila vazia.")
+        return False
     
     # Lógica de Triagem
-    for i in range(len(fila_espera)):
-        if fila_espera[i][1] == 1:
-            return "Chamado: " + fila_espera[i][0] + "Risco: Emergência"
-            fila_espera.pop(i)
+    for nivel in range(1, 6):
+        for i in range(len(fila_espera)):
+            if fila_espera[i][1] == nivel:
+                atendidos.append(fila_espera[i])
+                print("Chamado: " + fila_espera[i][0] + "Risco: " + nivel)
+                fila_espera.pop(i)
+                return True
             break
-        elif fila_espera[i][1] == 2:
-            return "Chamado: " + fila_espera[i][0] + "Risco: Muito urgente"
-            fila_espera.pop(i)
-            break
-        elif fila_espera[i][1] == 3:
-            return "Chamado: " + fila_espera[i][0] + "Risco: Urgente"
-            fila_espera.pop(i)
-            break
-        elif fila_espera[i][1] == 4:
-            return "Chamado: " + fila_espera[i][0] + "Risco: Pouco urgente"
-            fila_espera.pop(i)
-            break
-        elif fila_espera[i][1] == 5:
-            return "Chamado: " + fila_espera[i][0] + "Risco: Não urgente"
-            fila_espera.pop(i)
-            break
-        else:
-            return "Nenhum paciente na fila."
+    return False
 
 def desistir(cpf):
     for i in range(len(fila_espera)):
         if fila_espera[i][0] == cpf:
             fila_espera.pop(i)
             return True
-    return False
+    return "CPF não cadastrado."
 
 def tamanho_fila():
     return len(fila_espera)
