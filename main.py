@@ -47,7 +47,7 @@ def chamar_proximo( ):
         for i in range(len(fila_espera)):
             if fila_espera[i][1] == nivel:
                 atendidos.append(fila_espera[i])
-                print("Chamado: " + fila_espera[i][0] + "Risco: " + nivel)
+                print("Chamado:  + fila_espera[i][0] + Risco:  + {nivel}")
                 fila_espera.pop(i)
                 return True
             break
