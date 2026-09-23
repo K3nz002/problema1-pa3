@@ -13,6 +13,7 @@ A **Fase 1** foca em fornecer um sistema correto e funcional utilizando exclusiv
 - Pesquisa sobre estruturas de dados em Python
 - Pesquisa sobre markdown para a escrita do README.md
 - Teste do código afim de verificar se o programa roda perfeitamente e apontar os erros com o gemini
+- Geração de arquivos CSV para testes
 ---
 
 ##  Integrantes do Grupo
