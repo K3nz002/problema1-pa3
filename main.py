@@ -110,8 +110,14 @@ def relatorio_do_dia():
         while j >= 0 and relatorio[j][4] < chave[4]:
             relatorio[j + 1] = relatorio[j]
             j -= 1
+            
         relatorio[j + 1] = chave
+        print(f"Paciente{j}")
 
+    print("\n--- RELATÓRIO DO DIA (Ordenado por Tempo de Espera) ---")
+    for item in relatorio:
+        print(f"CPF: {item[0]} | Nome: {item[1]} | Espera: {item[4]:.2f}s")
+    
     return relatorio
 
 def main():
