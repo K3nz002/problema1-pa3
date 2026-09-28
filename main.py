@@ -83,9 +83,11 @@ def chamar_proximo():
     # Guarda o registo completo do atendimento para o R7
     atendidos.append([cpf, risco, ordem_chegada, tempo_espera])
 
+    ultimo_paciente = fila_espera.pop()
     # Heappop - Remoção da Fila de Prioridade
+
     if fila_espera:
-        fila_espera[0] = fila_espera.pop()
+        fila_espera[0] = ultimo_paciente
         i = 0
         n = len(fila_espera)
 
@@ -94,10 +96,20 @@ def chamar_proximo():
             right = 2 * i + 2
             maior = i
 
-            if left < n and fila_espera[left] > fila_espera[maior]:
-                maior = left
-            if right < n and fila_espera[right] > fila_espera[maior]:
-                maior = right
+            if left < n:
+                risco_left, ordem_left = fila_espera[left][1], fila_espera[left][2]
+                risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+                
+                if risco_left > risco_maior or (risco_left == risco_maior and ordem_left < ordem_maior):
+                    maior = left
+
+            if right < n:
+                risco_right, ordem_right = fila_espera[right][1], fila_espera[right][2]
+                risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+                
+                if risco_right > risco_maior or (risco_right == risco_maior and ordem_right < ordem_maior):
+                    maior = right
+            
             if maior != i:
                 fila_espera[i], fila_espera[maior] = fila_espera[maior], fila_espera[i]
                 i = maior
@@ -136,7 +148,7 @@ def relatorio_do_dia():
     for i in range(1, n):
         chave = relatorio[i]
         j = i - 1
-        while j >= 0 and relatorio[j][4] < chave[4]:
+        while j >= 0 and relatorio[j][3] < chave[3]:
             relatorio[j + 1] = relatorio[j]
             j -= 1
             
