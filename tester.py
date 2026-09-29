@@ -17,7 +17,7 @@ def salvar_relatorio_csv(relatorio, caminho_saida="relatorio_atendimentos.csv"):
     with open(caminho_saida, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         
-        writer.writerow(["CPF", "Prioridade", "Tempo_Espera"])
+        writer.writerow(["CPF", "Prioridade", "Ordem_Chegada", "Tempo_Espera"])
         
         for item in relatorio:
             if isinstance(item, (list, tuple)):
@@ -101,7 +101,7 @@ def exibir_log_desempenho(metricas, tempo_total_geral, qtd_operacoes):
 
 if __name__ == "__main__":
     pasta_atual = os.path.dirname(os.path.abspath(__file__))
-    caminho_csv = os.path.join(pasta_atual, "carga_100k.csv")
+    caminho_csv = os.path.join(pasta_atual, "carga_10k.csv")
 
     if os.path.exists(caminho_csv):
         print(f"Carregando {caminho_csv}...")

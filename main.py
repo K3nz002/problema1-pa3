@@ -49,7 +49,7 @@ def dar_entrada(cpf, risco):
 
         print(f"Paciente com CPF {cpf} entrou na fila com Risco {risco}.")
 
-        # Heappush - Inserção na Fila de Prioridade
+        # Max-Heap - Inserção na Fila de Prioridade colocando o de maior prioridade no topo (índice 0)
 
         i = len(fila_espera)-1
         pai = (i-1)//2
@@ -83,9 +83,12 @@ def chamar_proximo():
     # Guarda o registo completo do atendimento para o R7
     atendidos.append([cpf, risco, ordem_chegada, tempo_espera])
 
-    # Heappop - Remoção da Fila de Prioridade
+    # Heap sort - Remoção da Fila de Prioridade
+
+    ultimo_paciente = fila_espera.pop()
+
     if fila_espera:
-        fila_espera[0] = fila_espera.pop()
+        fila_espera[0] = ultimo_paciente
         i = 0
         n = len(fila_espera)
 
@@ -94,10 +97,19 @@ def chamar_proximo():
             right = 2 * i + 2
             maior = i
 
-            if left < n and fila_espera[left] > fila_espera[maior]:
-                maior = left
-            if right < n and fila_espera[right] > fila_espera[maior]:
-                maior = right
+            if left < n:
+                risco_left, ordem_left = fila_espera[left][1], fila_espera[left][2]
+                risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+                
+                if risco_left > risco_maior or (risco_left == risco_maior and ordem_left < ordem_maior):
+                    maior = left
+
+            if right < n:
+                risco_right, ordem_right = fila_espera[right][1], fila_espera[right][2]
+                risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+                
+                if risco_right > risco_maior or (risco_right == risco_maior and ordem_right < ordem_maior):
+                    maior = right
             if maior != i:
                 fila_espera[i], fila_espera[maior] = fila_espera[maior], fila_espera[i]
                 i = maior
@@ -131,17 +143,49 @@ def relatorio_do_dia():
     for item in atendidos:
         relatorio.append(item)
 
-    # Insertion Sort — Ordenação Decrescente pelo tempo de espera (índice 4)
+    # Heap sort — Ordenação Decrescente pelo tempo de espera (índice 3)
     n = len(relatorio)
-    for i in range(1, n):
-        chave = relatorio[i]
-        j = i - 1
-        while j >= 0 and relatorio[j][4] < chave[4]:
-            relatorio[j + 1] = relatorio[j]
-            j -= 1
-            
-        relatorio[j + 1] = chave
-        print(f"Paciente{j}")
+
+    # 1. Constrói o Min-Heap (para garantir ordem decrescente no final)
+    for i in range(n // 2 - 1, -1, -1):
+        while True:
+            menor = i
+            left = 2 * i + 1
+            right = 2 * i + 2
+
+            if left < n and relatorio[left][3] < relatorio[menor][3]:
+                menor = left
+
+            if right < n and relatorio[right][3] < relatorio[menor][3]:
+                menor = right
+
+            if menor != i:
+                relatorio[i], relatorio[menor] = relatorio[menor], relatorio[i]
+                i = menor
+                
+            else:
+                break
+
+    # 2. Extrai um a um e coloca no fim do array
+    for i in range(n - 1, 0, -1):
+        relatorio[i], relatorio[0] = relatorio[0], relatorio[i]
+        while True:
+            menor = i
+            left = 2 * i + 1
+            right = 2 * i + 2
+
+            if left < i and relatorio[left][3] < relatorio[menor][3]:
+                menor = left
+
+            if right < i and relatorio[right][3] < relatorio[menor][3]:
+                menor = right
+
+            if menor != i:
+                relatorio[i], relatorio[menor] = relatorio[menor], relatorio[i]
+                i = menor
+
+            else:
+                break
 
     print("\n--- RELATÓRIO DO DIA (Ordenado por Tempo de Espera) ---")
     for item in relatorio:
