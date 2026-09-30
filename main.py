@@ -138,60 +138,58 @@ def relatorio_do_dia():
         print("Nenhum atendimento realizado hoje.")
         return []
 
-    # Cópia manual da lista de atendidos
-    relatorio = []
-    for item in atendidos:
-        relatorio.append(item)
-
     # Heap sort — Ordenação Decrescente pelo tempo de espera (índice 3)
-    n = len(relatorio)
+    n = len(atendidos)
 
     # 1. Constrói o Min-Heap (para garantir ordem decrescente no final)
     for i in range(n // 2 - 1, -1, -1):
+        atual = i
         while True:
-            menor = i
-            left = 2 * i + 1
-            right = 2 * i + 2
+            menor = atual
+            left = 2 * atual + 1
+            right = 2 * atual + 2
 
-            if left < n and relatorio[left][3] < relatorio[menor][3]:
+            if left < n and atendidos[left][3] < atendidos[menor][3]:
                 menor = left
 
-            if right < n and relatorio[right][3] < relatorio[menor][3]:
+            if right < n and atendidos[right][3] < atendidos[menor][3]:
                 menor = right
 
-            if menor != i:
-                relatorio[i], relatorio[menor] = relatorio[menor], relatorio[i]
-                i = menor
+            if menor != atual:
+                atendidos[atual], atendidos[menor] = atendidos[menor], atendidos[atual]
+                atual = menor
                 
             else:
                 break
 
     # 2. Extrai um a um e coloca no fim do array
     for i in range(n - 1, 0, -1):
-        relatorio[i], relatorio[0] = relatorio[0], relatorio[i]
+        atendidos[i], atendidos[0] = atendidos[0], atendidos[i]
+        
+        atual = 0
         while True:
-            menor = i
-            left = 2 * i + 1
-            right = 2 * i + 2
+            menor = atual
+            left = 2 * atual + 1
+            right = 2 * atual + 2
 
-            if left < i and relatorio[left][3] < relatorio[menor][3]:
+            if left < i and atendidos[left][3] < atendidos[menor][3]:
                 menor = left
 
-            if right < i and relatorio[right][3] < relatorio[menor][3]:
+            if right < i and atendidos[right][3] < atendidos[menor][3]:
                 menor = right
 
-            if menor != i:
-                relatorio[i], relatorio[menor] = relatorio[menor], relatorio[i]
-                i = menor
+            if menor != atual:
+                atendidos[atual], atendidos[menor] = atendidos[menor], atendidos[atual]
+                atual = menor
 
             else:
                 break
 
     print("\n--- RELATÓRIO DO DIA (Ordenado por Tempo de Espera) ---")
-    for item in relatorio:
+    for item in atendidos:
         print(f"CPF: {item[0]} | Risco: {item[1]} | Ordem de Chegada: {item[2]} | Espera: {item[3]:.2f}s")
     
-    return relatorio
+    return atendidos
 
 def main():
     pass
