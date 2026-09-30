@@ -84,8 +84,10 @@ def chamar_proximo():
     atendidos.append([cpf, risco, ordem_chegada, tempo_espera])
 
     # Heappop - Remoção da Fila de Prioridade
+    ultimo_paciente = fila_espera.pop()
+
     if fila_espera:
-        fila_espera[0] = fila_espera.pop()
+        fila_espera[0] = ultimo_paciente
         i = 0
         n = len(fila_espera)
 
