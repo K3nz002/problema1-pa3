@@ -80,6 +80,7 @@ def chamar_proximo():
     # Cálculo do tempo de espera em número de eventos
     tempo_espera = contador_eventos - evento_entrada
 
+    print(f"Chamado: {cpf} | Risco: {risco} | Tempo de Espera: {tempo_espera} eventos")
     # Guarda o registo completo do atendimento para o R7
     atendidos.append([cpf, risco, ordem_chegada, tempo_espera])
 
@@ -96,17 +97,24 @@ def chamar_proximo():
             right = 2 * i + 2
             maior = i
 
-            if left < n and fila_espera[left] > fila_espera[maior]:
-                maior = left
-            if right < n and fila_espera[right] > fila_espera[maior]:
-                maior = right
+            if left < n:
+                risco_left, ordem_left = fila_espera[left][1], fila_espera[left][2]
+                risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+                
+                if risco_left > risco_maior or (risco_left == risco_maior and ordem_left < ordem_maior):
+                    maior = left
+
+            if right < n:
+                risco_right, ordem_right = fila_espera[right][1], fila_espera[right][2]
+                risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+                
+                if risco_right > risco_maior or (risco_right == risco_maior and ordem_right < ordem_maior):
+                    maior = right
             if maior != i:
                 fila_espera[i], fila_espera[maior] = fila_espera[maior], fila_espera[i]
                 i = maior
             else:
                 break
-                
-    print(f"Chamado: {cpf} | Risco: {risco} | Tempo de Espera: {tempo_espera} eventos")
     return True
 
 
