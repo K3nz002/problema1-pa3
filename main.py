@@ -118,12 +118,14 @@ def chamar_proximo():
     tempo_espera = contador_eventos - evento_entrada
 
     print(f"Chamado: {cpf} | Risco: {risco} | Tempo de Espera: {tempo_espera} eventos")
+
     # Guarda o registro completo do atendimento para o R7
     atendidos.append([cpf, risco, ordem_chegada, tempo_espera])
 
-    # Heappop - Remoção da Fila de Prioridade
     ultimo_paciente = fila_espera.pop()
+    # Heappop - Remoção da Fila de Prioridade
 
+    ultimo_paciente = fila_espera.pop()
     if fila_espera:
         fila_espera[0] = ultimo_paciente
         i = 0
@@ -147,6 +149,7 @@ def chamar_proximo():
                 
                 if risco_right > risco_maior or (risco_right == risco_maior and ordem_right < ordem_maior):
                     maior = right
+
             if maior != i:
                 fila_espera[i], fila_espera[maior] = fila_espera[maior], fila_espera[i]
                 i = maior
@@ -215,24 +218,57 @@ def tamanho_fila():
     return len(fila_espera)
 
 
+# R7 - Relatório do dia (ordenação por Merge Sort)
+
+
+def _intercalar(v, aux, inicio, meio, fim):
+    # Intercala v[inicio:meio] e v[meio:fim], ambas já ordenadas (decrescente)
+    i = inicio
+    j = meio
+    k = inicio
+    while i < meio and j < fim:
+        # >= mantém a ordem original nos empates (ordenação estável)
+        if v[i][3] >= v[j][3]:
+            aux[k] = v[i]
+            i += 1
+        else:
+            aux[k] = v[j]
+            j += 1
+        k += 1
+    while i < meio:
+        aux[k] = v[i]
+        i += 1
+        k += 1
+    while j < fim:
+        aux[k] = v[j]
+        j += 1
+        k += 1
+    for k in range(inicio, fim):
+        v[k] = aux[k]
+
+
+def _merge_sort_rec(v, aux, inicio, fim):
+    if fim - inicio <= 1:
+        return
+    meio = (inicio + fim) // 2
+    _merge_sort_rec(v, aux, inicio, meio)
+    _merge_sort_rec(v, aux, meio, fim)
+    _intercalar(v, aux, inicio, meio, fim)
+
+
+def merge_sort_relatorio(lista): 
+    aux = [None] * len(lista)
+    _merge_sort_rec(lista, aux, 0, len(lista))
+    return lista
+
+
 def relatorio_do_dia():
 
     if not atendidos:
         print("Nenhum atendimento realizado hoje.")
         return []
 
-    # Insertion Sort — Ordenação Decrescente pelo tempo de espera (índice 3)
-    n = len(atendidos)
-    for i in range(1, n):
-        chave = atendidos[i]
-        j = i - 1
-        while j >= 0 and atendidos[j][3] < chave[3]:
-            atendidos[j + 1] = atendidos[j]
-            j -= 1
-            
-        atendidos[j + 1] = chave
-    return atendidos
-
+    return merge_sort_relatorio(atendidos)
 
 def main():
     pass

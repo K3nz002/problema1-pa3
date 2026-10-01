@@ -17,7 +17,7 @@ def salvar_relatorio_csv(relatorio, caminho_saida="relatorio_atendimentos.csv"):
     with open(caminho_saida, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         
-        writer.writerow(["CPF", "Prioridade", "Tempo_Espera"])
+        writer.writerow(["CPF", "Prioridade", "Ordem_Chegada", "Tempo_Espera"])
         
         for item in relatorio:
             if isinstance(item, (list, tuple)):
