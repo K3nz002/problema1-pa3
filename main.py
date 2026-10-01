@@ -2,29 +2,66 @@
 
 fila_espera = [] 
 atendidos = []
-cadastros = []
+
+
+TAMANHO_TABELA = 200003
+tabela_hash = [None] * TAMANHO_TABELA
+total_cadastrados = 0
 
 contador_eventos = 0  # Contador interno de eventos do sistema para o R7
 ordem_chegada = 0
 
 
-def buscar_cadastro(cpf):           # R2: basicamente varre a lista de cadastros, se encontrar uma
-    for paciente in cadastros:      # correspondência, ele retorna o nome do paciente
-        if paciente[0] == cpf:
-            return paciente
+
+# R1 e R2: Tabela Hash
+
+
+def _funcao_hash(cpf):
+    """Calcula o índice base através do resto da divisão do CPF."""
+    cpf_limpo = "".join(filter(str.isdigit, str(cpf)))
+    if not cpf_limpo:
+        return 0
+    return int(cpf_limpo) % TAMANHO_TABELA
+
+
+def buscar_cadastro(cpf):           # R2: Busca O(1) na Tabela Hash com Sondagem Linear
+    pos = _funcao_hash(cpf)
+    inicio_pos = pos
+
+    while tabela_hash[pos] is not None:
+        if tabela_hash[pos][0] == cpf:
+            return tabela_hash[pos]  # Retorna [cpf, nome, nascimento]
+
+        # Sondagem Linear 
+        pos = (pos + 1) % TAMANHO_TABELA
+
+        if pos == inicio_pos:
+            break
+
     return None
 
 
-def cadastrar(cpf, nome, nascimento):
-    if buscar_cadastro(cpf) is not None:               #Verificando se o CPF já foi cadastrado
+def cadastrar(cpf, nome, nascimento):  # R1: Cadastro O(1) na Tabela Hash
+    global total_cadastrados
+
+    if buscar_cadastro(cpf) is not None:               # Verificando se o CPF já foi cadastrado
         print("O CPF digitado já possui cadastro.")
         return False
 
-    novo_paciente = [cpf, nome, nascimento]        #Cadastra o novo paicente
-    cadastros.append(novo_paciente)
+    if total_cadastrados >= TAMANHO_TABELA:
+        print("Erro: Tabela Hash cheia.")
+        return False
+
+    pos = _funcao_hash(cpf)
+
+    # Procura a primeira posição livre (None)
+    while tabela_hash[pos] is not None:
+        pos = (pos + 1) % TAMANHO_TABELA
+
+    tabela_hash[pos] = [cpf, nome, nascimento]
+    total_cadastrados += 1
     print("Cadastro efetuado!")
     return True
-
 
 
 def dar_entrada(cpf, risco):
@@ -81,7 +118,7 @@ def chamar_proximo():
     tempo_espera = contador_eventos - evento_entrada
 
     print(f"Chamado: {cpf} | Risco: {risco} | Tempo de Espera: {tempo_espera} eventos")
-    # Guarda o registo completo do atendimento para o R7
+    # Guarda o registro completo do atendimento para o R7
     atendidos.append([cpf, risco, ordem_chegada, tempo_espera])
 
     # Heappop - Remoção da Fila de Prioridade
@@ -189,20 +226,22 @@ def relatorio_do_dia():
     for item in atendidos:
         relatorio.append(item)
 
-    # Insertion Sort — Ordenação Decrescente pelo tempo de espera (índice 4)
+    # Insertion Sort — Ordenação Decrescente pelo tempo de espera (índice 3)
     n = len(relatorio)
     for i in range(1, n):
         chave = relatorio[i]
         j = i - 1
-        while j >= 0 and relatorio[j][4] < chave[4]:
+        while j >= 0 and relatorio[j][3] < chave[3]:
             relatorio[j + 1] = relatorio[j]
             j -= 1
             
         relatorio[j + 1] = chave
     return relatorio
 
+
 def main():
     pass
+
 
 if __name__ == "__main__":
     main()
