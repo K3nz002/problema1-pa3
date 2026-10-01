@@ -184,11 +184,6 @@ def relatorio_do_dia():
 
             else:
                 break
-
-    print("\n--- RELATÓRIO DO DIA (Ordenado por Tempo de Espera) ---")
-    for item in atendidos:
-        print(f"CPF: {item[0]} | Risco: {item[1]} | Ordem de Chegada: {item[2]} | Espera: {item[3]:.2f}s")
-    
     return atendidos
 
 def main():
