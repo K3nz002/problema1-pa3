@@ -1,30 +1,65 @@
-# Bibliotecas
-
 fila_espera = [] 
 atendidos = []
-cadastros = []
+
+
+TAMANHO_TABELA = 200003
+tabela_hash = [None] * TAMANHO_TABELA
+total_cadastrados = 0
 
 contador_eventos = 0  # Contador interno de eventos do sistema para o R7
 ordem_chegada = 0
 
 
-def buscar_cadastro(cpf):           # R2: basicamente varre a lista de cadastros, se encontrar uma
-    for paciente in cadastros:      # correspondência, ele retorna o nome do paciente
-        if paciente[0] == cpf:
-            return paciente
+
+# R1 e R2: Tabela Hash
+
+
+def _funcao_hash(cpf):
+    """Calcula o índice base através do resto da divisão do CPF."""
+    cpf_limpo = "".join(filter(str.isdigit, str(cpf)))
+    if not cpf_limpo:
+        return 0
+    return int(cpf_limpo) % TAMANHO_TABELA
+
+
+def buscar_cadastro(cpf):           # R2: Busca O(1) na Tabela Hash com Sondagem Linear
+    pos = _funcao_hash(cpf)
+    inicio_pos = pos
+
+    while tabela_hash[pos] is not None:
+        if tabela_hash[pos][0] == cpf:
+            return tabela_hash[pos]  # Retorna [cpf, nome, nascimento]
+
+        # Sondagem Linear 
+        pos = (pos + 1) % TAMANHO_TABELA
+
+        if pos == inicio_pos:
+            break
+
     return None
 
 
-def cadastrar(cpf, nome, nascimento):
-    if buscar_cadastro(cpf) is not None:               #Verificando se o CPF já foi cadastrado
+def cadastrar(cpf, nome, nascimento):  # R1: Cadastro O(1) na Tabela Hash
+    global total_cadastrados
+
+    if buscar_cadastro(cpf) is not None:               # Verificando se o CPF já foi cadastrado
         print("O CPF digitado já possui cadastro.")
         return False
 
-    novo_paciente = [cpf, nome, nascimento]        #Cadastra o novo paicente
-    cadastros.append(novo_paciente)
+    if total_cadastrados >= TAMANHO_TABELA:
+        print("Erro: Tabela Hash cheia.")
+        return False
+
+    pos = _funcao_hash(cpf)
+
+    # Procura a primeira posição livre (None)
+    while tabela_hash[pos] is not None:
+        pos = (pos + 1) % TAMANHO_TABELA
+
+    tabela_hash[pos] = [cpf, nome, nascimento]
+    total_cadastrados += 1
     print("Cadastro efetuado!")
     return True
-
 
 
 def dar_entrada(cpf, risco):
@@ -80,12 +115,15 @@ def chamar_proximo():
     # Cálculo do tempo de espera em número de eventos
     tempo_espera = contador_eventos - evento_entrada
 
-    # Guarda o registo completo do atendimento para o R7
+    print(f"Chamado: {cpf} | Risco: {risco} | Tempo de Espera: {tempo_espera} eventos")
+
+    # Guarda o registro completo do atendimento para o R7
     atendidos.append([cpf, risco, ordem_chegada, tempo_espera])
 
     ultimo_paciente = fila_espera.pop()
     # Heappop - Remoção da Fila de Prioridade
 
+    ultimo_paciente = fila_espera.pop()
     if fila_espera:
         fila_espera[0] = ultimo_paciente
         i = 0
@@ -109,23 +147,69 @@ def chamar_proximo():
                 
                 if risco_right > risco_maior or (risco_right == risco_maior and ordem_right < ordem_maior):
                     maior = right
-            
+
             if maior != i:
                 fila_espera[i], fila_espera[maior] = fila_espera[maior], fila_espera[i]
                 i = maior
             else:
                 break
-                
-    print(f"Chamado: {cpf} | Risco: {risco} | Tempo de Espera: {tempo_espera} eventos")
     return True
 
 
 def desistir(cpf):
+
+    indice = -1
     for i in range(len(fila_espera)):
         if fila_espera[i][0] == cpf:
-            fila_espera.pop(i)
-            return True
-    return "CPF não cadastrado ou não está na fila."
+            indice = i
+            break
+    if indice == -1:
+        print("CPF não cadastrado ou não está na fila.")
+        return False
+    if indice == len(fila_espera) - 1:
+        fila_espera.pop()
+        print(f"Paciente com CPF {cpf} desistiu e foi removido.")
+        return True
+    ultimo = fila_espera.pop()
+    fila_espera[indice] = ultimo
+    _reorganizar_heap_no_indice(indice)
+
+    print(f"Paciente com CPF {cpf} desistiu e foi removido.")
+    return True
+
+
+def _reorganizar_heap_no_indice(i):
+    n = len(fila_espera)
+    
+    while True:
+        left = 2 * i + 1
+        right = 2 * i + 2
+        maior = i
+        if left < n:
+            risco_left, ordem_left = fila_espera[left][1], fila_espera[left][2]
+            risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+            if risco_left > risco_maior or (risco_left == risco_maior and ordem_left < ordem_maior):
+                maior = left
+        if right < n:
+            risco_right, ordem_right = fila_espera[right][1], fila_espera[right][2]
+            risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+            if risco_right > risco_maior or (risco_right == risco_maior and ordem_right < ordem_maior):
+                maior = right
+        if maior != i:
+            fila_espera[i], fila_espera[maior] = fila_espera[maior], fila_espera[i]
+            i = maior
+        else:
+            break
+            
+    while i > 0:
+        pai = (i - 1) // 2
+        risco_i, ordem_i = fila_espera[i][1], fila_espera[i][2]
+        risco_pai, ordem_pai = fila_espera[pai][1], fila_espera[pai][2]
+        if risco_i > risco_pai or (risco_i == risco_pai and ordem_i < ordem_pai):
+            fila_espera[i], fila_espera[pai] = fila_espera[pai], fila_espera[i]
+            i = pai
+        else:
+            break
 
 
 def tamanho_fila():
