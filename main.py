@@ -119,11 +119,59 @@ def chamar_proximo():
 
 
 def desistir(cpf):
+
+    indice = -1
     for i in range(len(fila_espera)):
         if fila_espera[i][0] == cpf:
-            fila_espera.pop(i)
-            return True
-    return "CPF não cadastrado ou não está na fila."
+            indice = i
+            break
+    if indice == -1:
+        print("CPF não cadastrado ou não está na fila.")
+        return False
+    if indice == len(fila_espera) - 1:
+        fila_espera.pop()
+        print(f"Paciente com CPF {cpf} desistiu e foi removido.")
+        return True
+    ultimo = fila_espera.pop()
+    fila_espera[indice] = ultimo
+    _reorganizar_heap_no_indice(indice)
+
+    print(f"Paciente com CPF {cpf} desistiu e foi removido.")
+    return True
+
+
+def _reorganizar_heap_no_indice(i):
+    n = len(fila_espera)
+    
+    while True:
+        left = 2 * i + 1
+        right = 2 * i + 2
+        maior = i
+        if left < n:
+            risco_left, ordem_left = fila_espera[left][1], fila_espera[left][2]
+            risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+            if risco_left > risco_maior or (risco_left == risco_maior and ordem_left < ordem_maior):
+                maior = left
+        if right < n:
+            risco_right, ordem_right = fila_espera[right][1], fila_espera[right][2]
+            risco_maior, ordem_maior = fila_espera[maior][1], fila_espera[maior][2]
+            if risco_right > risco_maior or (risco_right == risco_maior and ordem_right < ordem_maior):
+                maior = right
+        if maior != i:
+            fila_espera[i], fila_espera[maior] = fila_espera[maior], fila_espera[i]
+            i = maior
+        else:
+            break
+            
+    while i > 0:
+        pai = (i - 1) // 2
+        risco_i, ordem_i = fila_espera[i][1], fila_espera[i][2]
+        risco_pai, ordem_pai = fila_espera[pai][1], fila_espera[pai][2]
+        if risco_i > risco_pai or (risco_i == risco_pai and ordem_i < ordem_pai):
+            fila_espera[i], fila_espera[pai] = fila_espera[pai], fila_espera[i]
+            i = pai
+        else:
+            break
 
 
 def tamanho_fila():
