@@ -151,12 +151,6 @@ def relatorio_do_dia():
             j -= 1
             
         relatorio[j + 1] = chave
-        print(f"Paciente{j}")
-
-    print("\n--- RELATÓRIO DO DIA (Ordenado por Tempo de Espera) ---")
-    for item in relatorio:
-        print(f"CPF: {item[0]} | Risco: {item[1]} | Ordem de Chegada: {item[2]} | Espera: {item[3]:.2f}s")
-    
     return relatorio
 
 def main():
