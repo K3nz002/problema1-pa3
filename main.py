@@ -138,28 +138,19 @@ def relatorio_do_dia():
         print("Nenhum atendimento realizado hoje.")
         return []
 
-    # Cópia manual da lista de atendidos
-    relatorio = []
-    for item in atendidos:
-        relatorio.append(item)
-
     # Insertion Sort — Ordenação Decrescente pelo tempo de espera (índice 4)
-    n = len(relatorio)
+    n = len(atendidos)
     for i in range(1, n):
-        chave = relatorio[i]
+        chave = atendidos[i]
         j = i - 1
-        while j >= 0 and relatorio[j][3] < chave[3]:
-            relatorio[j + 1] = relatorio[j]
+        while j >= 0 and atendidos[j][3] < atendidos[3]:
+            atendidos[j + 1] = atendidos[j]
             j -= 1
             
-        relatorio[j + 1] = chave
+        atendidos[j + 1] = chave
         print(f"Paciente{j}")
-
-    print("\n--- RELATÓRIO DO DIA (Ordenado por Tempo de Espera) ---")
-    for item in relatorio:
-        print(f"CPF: {item[0]} | Risco: {item[1]} | Ordem de Chegada: {item[2]} | Espera: {item[3]:.2f}s")
     
-    return relatorio
+    return atendidos
 
 def main():
     pass
