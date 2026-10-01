@@ -143,12 +143,11 @@ def relatorio_do_dia():
     for i in range(1, n):
         chave = atendidos[i]
         j = i - 1
-        while j >= 0 and atendidos[j][3] < atendidos[3]:
+        while j >= 0 and atendidos[j][3] < chave[3]:
             atendidos[j + 1] = atendidos[j]
             j -= 1
             
         atendidos[j + 1] = chave
-        print(f"Paciente{j}")
     
     return atendidos
 
