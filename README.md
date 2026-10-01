@@ -39,4 +39,4 @@ A **Fase 1** foca em fornecer um sistema correto e funcional utilizando exclusiv
    ```bash
    git clone [[https://github.com/seu-usuario/seu-repositorio](https://github.com/K3nz002/problema1-pa3)
    cd problema1-pa3
-   python main.py
+   python tester.py
