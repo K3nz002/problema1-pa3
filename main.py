@@ -120,7 +120,6 @@ def chamar_proximo():
     # Guarda o registro completo do atendimento para o R7
     atendidos.append([cpf, risco, ordem_chegada, tempo_espera])
 
-    ultimo_paciente = fila_espera.pop()
     # Heappop - Remoção da Fila de Prioridade
 
     ultimo_paciente = fila_espera.pop()
