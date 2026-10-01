@@ -80,6 +80,8 @@ def chamar_proximo():
     # Cálculo do tempo de espera em número de eventos
     tempo_espera = contador_eventos - evento_entrada
 
+    print(f"Chamado: {cpf} | Risco: {risco} | Tempo de Espera: {tempo_espera} eventos")
+    
     # Guarda o registo completo do atendimento para o R7
     atendidos.append([cpf, risco, ordem_chegada, tempo_espera])
 
@@ -115,8 +117,6 @@ def chamar_proximo():
                 i = maior
             else:
                 break
-                
-    print(f"Chamado: {cpf} | Risco: {risco} | Tempo de Espera: {tempo_espera} eventos")
     return True
 
 
@@ -182,18 +182,7 @@ def relatorio_do_dia():
         print("Nenhum atendimento realizado hoje.")
         return []
 
-    # Cópia manual da lista de atendidos
-    relatorio = []
-    for item in atendidos:
-        relatorio.append(item)
-
-    merge_sort_relatorio(relatorio)
-
-    print("\n--- RELATÓRIO DO DIA (Ordenado por Tempo de Espera) ---")
-    for item in relatorio:
-        print(f"CPF: {item[0]} | Risco: {item[1]} | Ordem de Chegada: {item[2]} | Espera: {item[3]} eventos")
-
-    return relatorio
+    return merge_sort_relatorio(atendidos)
 
 def main():
     pass

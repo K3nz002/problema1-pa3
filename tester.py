@@ -101,7 +101,7 @@ def exibir_log_desempenho(metricas, tempo_total_geral, qtd_operacoes):
 
 if __name__ == "__main__":
     pasta_atual = os.path.dirname(os.path.abspath(__file__))
-    caminho_csv = os.path.join(pasta_atual, "carga_10k.csv")
+    caminho_csv = os.path.join(pasta_atual, "carga_100k.csv")
 
     if os.path.exists(caminho_csv):
         print(f"Carregando {caminho_csv}...")
